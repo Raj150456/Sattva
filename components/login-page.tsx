@@ -202,17 +202,16 @@ export function LoginPage() {
               <Wallet className="mr-2 h-4 w-4" />
               Connect Wallet (Coming Soon)
             </Button>
+
+            <div className="text-center text-sm text-muted-foreground">
+              Don't have an account?{" "}
+              <Link href="/register" className="font-medium text-primary hover:underline">
+                Sign up
+              </Link>
+            </div>
           </form>
 
-          {/* Demo Credentials Hint (for development) */}
-          <div className="mt-6 rounded-lg border border-dashed border-muted-foreground/30 bg-muted/30 p-4">
-            <p className="text-xs font-medium text-muted-foreground mb-2">Demo Credentials:</p>
-            <div className="space-y-1 text-xs text-muted-foreground/80">
-              <p><span className="font-medium">Farmer:</span> testf@gmail.com / farmer123</p>
-              <p><span className="font-medium">Manufacturer:</span> testm@gmail.com / manufacturer123</p>
-              <p><span className="font-medium">Consumer:</span> testc@gmail.com / consumer123</p>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>

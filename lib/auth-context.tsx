@@ -10,7 +10,7 @@ import {
 } from "react"
 import { useRouter } from "next/navigation"
 import type { User, UserRole } from "./types"
-import { authenticateUser, type AuthResult } from "./services/auth-service"
+import { authenticateUser, registerUser, type AuthResult } from "./services/auth-service"
 
 // User data stored in localStorage (without passwordHash for security)
 type SafeUser = Omit<User, 'passwordHash'>
@@ -18,6 +18,7 @@ type SafeUser = Omit<User, 'passwordHash'>
 interface AuthContextType {
   user: SafeUser | null
   login: (email: string, password: string, role: UserRole) => Promise<AuthResult>
+  register: (name: string, email: string, password: string, role: UserRole) => Promise<AuthResult>
   logout: () => void
   isAuthenticated: boolean
   loading: boolean
@@ -63,6 +64,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     []
   )
 
+  /**
+   * Registers a new user and automatically logs them in
+   */
+  const register = useCallback(
+    async (name: string, email: string, password: string, role: UserRole): Promise<AuthResult> => {
+      const result = await registerUser({ name, email, password, role })
+
+      if (result.success && result.user) {
+        localStorage.setItem("user", JSON.stringify(result.user))
+        setUser(result.user)
+      }
+
+      return result
+    },
+    []
+  )
+
   const logout = useCallback(() => {
     localStorage.removeItem("user")
     setUser(null)
@@ -71,7 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, isAuthenticated: !!user, loading }}
+      value={{ user, login, register, logout, isAuthenticated: !!user, loading }}
     >
       {children}
     </AuthContext.Provider>
