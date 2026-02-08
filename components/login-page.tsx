@@ -5,7 +5,7 @@ import React from "react"
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Leaf, Mail, Lock, Wallet, ArrowRight } from "lucide-react"
+import { Leaf, Mail, Lock, Wallet, ArrowRight, AlertCircle } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -21,21 +21,37 @@ const roles: { value: UserRole; label: string; description: string }[] = [
 
 export function LoginPage() {
   const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   const [selectedRole, setSelectedRole] = useState<UserRole>("farmer")
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const { login } = useAuth()
   const router = useRouter()
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
     setIsLoading(true)
-    await new Promise((r) => setTimeout(r, 800))
-    login(email || `demo@sattva.io`, selectedRole)
-    setIsLoading(false)
-    if (selectedRole === "consumer") {
-      router.push("/consumer/marketplace")
-    } else {
-      router.push("/dashboard")
+    setError(null)
+
+    try {
+      const result = await login(email, password, selectedRole)
+
+      if (result.success) {
+        // Redirect based on role
+        if (selectedRole === "consumer") {
+          router.push("/consumer/marketplace")
+        } else {
+          router.push("/dashboard")
+        }
+      } else {
+        // Display the error message from the auth service
+        setError(result.error || "Login failed. Please try again.")
+      }
+    } catch (err) {
+      console.error("Login error:", err)
+      setError("An unexpected error occurred. Please try again.")
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -51,7 +67,7 @@ export function LoginPage() {
             Authentic Ayurveda, Verified on Chain
           </h1>
           <p className="mt-4 text-lg leading-relaxed text-primary-foreground/70">
-            Join thousands of farmers, manufacturers, and conscious consumers 
+            Join thousands of farmers, manufacturers, and conscious consumers
             building trust in the Ayurvedic supply chain.
           </p>
           <div className="mt-12 flex flex-col gap-4">
@@ -82,6 +98,17 @@ export function LoginPage() {
           <h2 className="text-2xl font-bold text-foreground">Welcome back</h2>
           <p className="mt-1 text-sm text-muted-foreground">Sign in to your Sattva account</p>
 
+          {/* Error Alert */}
+          {error && (
+            <div className="mt-4 flex items-start gap-3 rounded-lg border border-destructive/50 bg-destructive/10 p-4">
+              <AlertCircle className="h-5 w-5 shrink-0 text-destructive" />
+              <div className="flex-1">
+                <p className="text-sm font-medium text-destructive">Login Failed</p>
+                <p className="mt-1 text-sm text-destructive/80">{error}</p>
+              </div>
+            </div>
+          )}
+
           <form onSubmit={handleLogin} className="mt-8 flex flex-col gap-6">
             {/* Role Selection */}
             <div className="flex flex-col gap-2">
@@ -91,7 +118,10 @@ export function LoginPage() {
                   <button
                     key={role.value}
                     type="button"
-                    onClick={() => setSelectedRole(role.value)}
+                    onClick={() => {
+                      setSelectedRole(role.value)
+                      setError(null) // Clear error when changing role
+                    }}
                     className={cn(
                       "flex flex-col items-start rounded-lg border p-3 text-left transition-all",
                       selectedRole === role.value
@@ -116,8 +146,12 @@ export function LoginPage() {
                   type="email"
                   placeholder="you@example.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value)
+                    setError(null) // Clear error when typing
+                  }}
                   className="pl-10"
+                  required
                 />
               </div>
             </div>
@@ -131,8 +165,13 @@ export function LoginPage() {
                   id="password"
                   type="password"
                   placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value)
+                    setError(null) // Clear error when typing
+                  }}
                   className="pl-10"
-                  defaultValue="demo1234"
+                  required
                 />
               </div>
             </div>
@@ -164,6 +203,16 @@ export function LoginPage() {
               Connect Wallet (Coming Soon)
             </Button>
           </form>
+
+          {/* Demo Credentials Hint (for development) */}
+          <div className="mt-6 rounded-lg border border-dashed border-muted-foreground/30 bg-muted/30 p-4">
+            <p className="text-xs font-medium text-muted-foreground mb-2">Demo Credentials:</p>
+            <div className="space-y-1 text-xs text-muted-foreground/80">
+              <p><span className="font-medium">Farmer:</span> testf@gmail.com / farmer123</p>
+              <p><span className="font-medium">Manufacturer:</span> testm@gmail.com / manufacturer123</p>
+              <p><span className="font-medium">Consumer:</span> testc@gmail.com / consumer123</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

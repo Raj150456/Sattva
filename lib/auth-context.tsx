@@ -10,11 +10,14 @@ import {
 } from "react"
 import { useRouter } from "next/navigation"
 import type { User, UserRole } from "./types"
-import { mockUsers } from "./mock-data"
+import { authenticateUser, type AuthResult } from "./services/auth-service"
+
+// User data stored in localStorage (without passwordHash for security)
+type SafeUser = Omit<User, 'passwordHash'>
 
 interface AuthContextType {
-  user: User | null
-  login: (email: string, role: UserRole) => void
+  user: SafeUser | null
+  login: (email: string, password: string, role: UserRole) => Promise<AuthResult>
   logout: () => void
   isAuthenticated: boolean
   loading: boolean
@@ -23,7 +26,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<SafeUser | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
 
@@ -40,22 +43,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
+  /**
+   * Secure login function that validates:
+   * 1. Email exists in database
+   * 2. Password is correct
+   * 3. Selected role matches user's actual role
+   */
   const login = useCallback(
-    (email: string, role: UserRole) => {
-      // Find a mock user with the specified role to simulate login
-      const found = mockUsers.find((u) => u.role === role)
-      
-      const userToLogin = found ? { ...found, email: email } : {
-        id: `u_${Date.now()}`,
-        name: email.split("@")[0],
-        email,
-        role,
-        verifiedStatus: false,
-        createdAt: new Date().toISOString(),
+    async (email: string, password: string, role: UserRole): Promise<AuthResult> => {
+      const result = await authenticateUser(email, password, role)
+
+      if (result.success && result.user) {
+        localStorage.setItem("user", JSON.stringify(result.user))
+        setUser(result.user)
       }
 
-      localStorage.setItem("user", JSON.stringify(userToLogin))
-      setUser(userToLogin)
+      return result
     },
     []
   )

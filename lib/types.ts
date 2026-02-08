@@ -5,6 +5,7 @@ export interface User {
   name: string
   email: string
   role: UserRole
+  passwordHash: string  // bcrypt-style hashed password
   walletAddress?: string
   verifiedStatus: boolean
   createdAt: string

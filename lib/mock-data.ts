@@ -19,6 +19,8 @@ export const mockUsers: User[] = [
     name: "Test Farmer",
     email: "testf@gmail.com",
     role: "farmer",
+    // Password: farmer123
+    passwordHash: "$sha256$a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4$bfa1b44131519b4e01c30acecae6fc30ecfa1e86548beb05605b54d5457cfa85",
     walletAddress: "0x7a3B...f91E",
     verifiedStatus: true,
     createdAt: "2025-01-15T08:00:00Z",
@@ -29,6 +31,8 @@ export const mockUsers: User[] = [
     name: "Test Manufacturer",
     email: "testm@gmail.com",
     role: "manufacturer",
+    // Password: manufacturer123
+    passwordHash: "$sha256$f1e2d3c4b5a6f1e2d3c4b5a6f1e2d3c4$ee8c24cd72054d64d9614e0c69a1901bcb0755ab45b2e75d6a4e1d3948be065c",
     walletAddress: "0x8c4D...a23F",
     verifiedStatus: true,
     createdAt: "2025-02-01T10:00:00Z",
@@ -38,6 +42,8 @@ export const mockUsers: User[] = [
     name: "Test Consumer",
     email: "testc@gmail.com",
     role: "consumer",
+    // Password: consumer123
+    passwordHash: "$sha256$1a2b3c4d5e6f1a2b3c4d5e6f1a2b3c4d$726df581416cd0db23bfdc16a67dad6cd88c942f67288efeb29b45b752cf2983",
     verifiedStatus: false,
     createdAt: "2025-03-10T12:00:00Z",
   },
