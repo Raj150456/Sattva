@@ -119,7 +119,6 @@ export default function DashboardPage() {
           value={stats.verifiedBatches}
           icon={<ShieldCheck className="h-5 w-5" />}
           trend={{ value: 8, label: "vs last month" }}
-          glowing
         />
         <StatCard
           title="Quality Score"
