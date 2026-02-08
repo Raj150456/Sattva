@@ -4,20 +4,20 @@ import React from "react"
 
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { AuthProvider, useAuth } from "@/lib/auth-context"
+import { useAuth } from "@/lib/auth-context"
 import { DashboardSidebar } from "@/components/dashboard-sidebar"
 
-function DashboardLayoutInner({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, user } = useAuth()
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, user, loading } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!loading && !isAuthenticated) {
       router.push("/login")
     }
-  }, [isAuthenticated, router])
+  }, [isAuthenticated, loading, router])
 
-  if (!isAuthenticated || !user) {
+  if (loading || !isAuthenticated || !user) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-3">
@@ -37,13 +37,5 @@ function DashboardLayoutInner({ children }: { children: React.ReactNode }) {
         </div>
       </main>
     </div>
-  )
-}
-
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <AuthProvider>
-      <DashboardLayoutInner>{children}</DashboardLayoutInner>
-    </AuthProvider>
   )
 }
