@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 40 30% 97%;
+    --foreground: 150 30% 10%;
+    --card: 40 25% 95%;
+    --card-foreground: 150 30% 10%;
+    --popover: 40 30% 97%;
+    --popover-foreground: 150 30% 10%;
+    --primary: 152 45% 28%;
+    --primary-foreground: 40 30% 97%;
+    --secondary: 35 30% 90%;
+    --secondary-foreground: 150 25% 15%;
+    --muted: 35 20% 92%;
+    --muted-foreground: 150 10% 45%;
+    --accent: 142 35% 40%;
+    --accent-foreground: 40 30% 97%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 35 20% 88%;
+    --input: 35 20% 88%;
+    --ring: 152 45% 28%;
+    --chart-1: 152 45% 28%;
+    --chart-2: 142 35% 40%;
+    --chart-3: 35 40% 55%;
+    --chart-4: 170 30% 45%;
+    --chart-5: 25 50% 50%;
+    --radius: 0.75rem;
+    --sidebar-background: 150 30% 10%;
+    --sidebar-foreground: 40 20% 90%;
+    --sidebar-primary: 142 35% 50%;
+    --sidebar-primary-foreground: 150 30% 10%;
+    --sidebar-accent: 150 25% 15%;
+    --sidebar-accent-foreground: 40 20% 90%;
+    --sidebar-border: 150 20% 18%;
+    --sidebar-ring: 142 35% 50%;
+    --success: 142 50% 45%;
+    --success-foreground: 40 30% 97%;
+    --warning: 35 80% 55%;
+    --warning-foreground: 150 30% 10%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  .glass-dark {
+    background: rgba(20, 40, 30, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+}
